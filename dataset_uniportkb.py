@@ -1,3 +1,19 @@
+"""Workflow OverviewThe pipeline follows a four-stage process to transform raw Proteome IDs into a structured dataset ready for AI model training 
+(e.g., GNNs like GearNet).1. Data Retrieval (UniProt Stream)The script targets specific mammalian groups defined in the PROTEOME_IDS dictionary. 
+It uses the UniProt REST API to stream full proteome data in FASTA format, ensuring the sequence and unique Accession ID are captured for every protein
+in the organism.2. Localization Logic (The Decision Engine)For each protein, the pipeline determines its subcellular location using 
+a two-tiered hierarchy:Primary: GO Annotation Scoring: The script fetches Gene Ontology (GO) terms.
+It applies a weighted scoring system based on UniProt Evidence Codes:High Confidence (5 pts): Experimental evidence (EXP, IDA).
+Medium Confidence (3-4 pts): High-level computational or curator-reviewed evidence (ISS, ISO, IPI).
+Low Confidence (1 pt): Inferred from Electronic Annotation (IEA).Secondary: Keyword Fallback: If GO data is missing, the script parses 
+the "Subcellular Location" text comments and maps them to canonical labels using a keyword-matching dictionary.3. Quality Control & ConfidenceEach entry 
+is assigned a Confidence_Score:Score $\ge$ 3: Indicates the label is derived from strong, often experimental, evidence.Score 2: Indicates the label is
+derived from text-based comments (fallback).Score 0-1: Indicates weak or unknown localization. 
+"""
+
+
+
+
 import requests
 import pandas as pd
 from collections import Counter
